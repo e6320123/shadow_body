@@ -1,0 +1,24 @@
+name: Digital_Twin_Heartbeat  # 分身心跳任務名稱
+
+on:
+  schedule:
+    - cron: '0 1 * * *'      # 每天台灣時間早上 09:00 自動執行 (UTC 01:00)
+  workflow_dispatch:          # 允許主公手動點擊「執行」按鈕
+
+jobs:
+  run_bot:
+    runs-on: ubuntu-latest    # 在 GitHub 的免費 Linux 伺服器跑
+    steps:
+      - name: 複製代碼到雲端
+        uses: actions/checkout@v3
+
+      - name: 安裝 Python 環境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 安裝必要套件
+        run: pip install requests
+
+      - name: 執行分身心跳腳本
+        run: python bot_heartbeat.py
