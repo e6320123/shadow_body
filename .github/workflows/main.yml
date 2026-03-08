@@ -21,4 +21,4 @@ jobs:
         run: pip install requests
 
       - name: 執行分身心跳腳本
-        run: python bot_heartbeat.py
+        run: python 132.py
