@@ -1,24 +1,33 @@
-name: Digital_Twin_Heartbeat  # 分身心跳任務名稱
+name: 澗蒼國・求職戰報自動化  # 劇本名稱
 
 on:
+  push:
+    branches: [ main ]      # 當您上傳(push)代碼時，自動執行一次
   schedule:
-    - cron: '0 1 * * *'      # 每天台灣時間早上 09:00 自動執行 (UTC 01:00)
-  workflow_dispatch:          # 允許主公手動點擊「執行」按鈕
+    - cron: '0 1,9 * * *'   # 每天早上 9 點與下午 5 點執行 (UTC時間轉換)
+  workflow_dispatch:        # 這會產生一個「手動執行」按鈕，絕不會消失
 
 jobs:
-  run_bot:
-    runs-on: ubuntu-latest    # 在 GitHub 的免費 Linux 伺服器跑
+  build:
+    runs-on: ubuntu-latest  # 使用最新的 Linux 系統
+
     steps:
-      - name: 複製代碼到雲端
-        uses: actions/checkout@v3
+    - name: 1. 複製代碼到雲端
+      uses: actions/checkout@v3
 
-      - name: 安裝 Python 環境
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+    - name: 2. 安裝 Python 環境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
 
-      - name: 安裝必要套件
-        run: pip install requests
+    - name: 3. 安裝必要套件
+      run: |
+        pip install requests
+        pip install beautifulsoup4
+        # 如果您有用到 selenium，這裡才需要加安裝指令
 
-      - name: 執行分身心跳腳本
-        run: python request.py
+    - name: 4. 執行爬蟲並發送 LINE
+      env:
+        # 這裡就是從保險箱提款的動作
+        LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }} 
+      run: python job_scraperBYLine.py  # 請確保檔案名稱正確
